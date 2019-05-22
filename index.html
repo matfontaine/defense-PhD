@@ -1,0 +1,899 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=0.8, maximum-scale=1.0, user-scalable=no">
+
+		<title>PhD Defense</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/lirmm.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/github.css">
+		<script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section class="cover" data-background="figures/background_blurred.jpg" data-state="no-title-footer no-progressbar has-dark-background">
+					<h1 style="color:white">PhD Defense, Nancy</h1>
+					<h2 id='coverh2'>$\alpha$-Stable Processes for Signal Processing</h2>
+					<h3><a href="https://anr-kamoulox.github.io">anr-kamoulox.github.io</a></h3>
+					<p id='coverauthors'>
+						Mathieu Fontaine<br />
+						mathieu.fontaine@inria.fr
+					</p>
+					<p>
+					June 12th, 2019
+					</p>
+					<img src="css/theme/img/inria-cover.svg" id="inria" class="logo" alt="">
+					<img src="figures/logos/lorraine.png" id="lorraine" class="partners" alt="">
+					<img src="figures/logos/telecom.svg" id="telecom" class="partners" alt="">
+					<img src="figures/logos/zenith.jpg" id="telecom" class="partners" alt="">
+					<p id='coversupervisors'>
+						<u>Supervisors</u> :</br> Roland Badeau, Telecom ParisTech, France </br>
+						Antoine Liutkus, Inria LIRMM, Montpellier
+					</p>
+
+					<aside class="notes">
+						<ul><li>Remercier les gens d'être présents.</li>
+						<li>anr-kamoulox: débruitage d'archive du CNRS d'ethnomusicologue d'enregistrement fin XIXème début XXème</li></ul>
+					</aside>
+				</section>
+
+				<section class="cover" data-background="figures/background.jpg" data-state="no-title-footer no-progressbar has-dark-background">
+					<h2 id='coverh2'>I-A: Introduction to signal processing</h2>
+				</section>
+
+
+				<section data-markdown>
+							<textarea data-template>
+								# What a signal is ?
+								<img src="figures/montage_signal.png" alt="" style="background-color ;" width="100%">
+								<div class="remark" style="margin-top: 1em;">A __signal__ is usually captured by *sensors* (*e.g.* microphones, SAR etc.)</div>
+
+							</textarea>
+				</section>
+
+				<section data-markdown>
+							<textarea data-template>
+								# Two types of signals: analog and digital
+								<img src="figures/A-N.jpg" alt="" style="background-color ;" width="100%">
+								<div class='multiCol'>
+									<div class='col'>
+										<ol>
+											<li style="color:green;">Close to the real signal</li>
+											<li style="color:red;">Hard to quantify and study theoretically</li>
+										</ol>
+									</div>
+									<div class='col'>
+										<ol>
+											<li style="color:green;">Easy computations</li>
+											<li style="color:red;">Overlap issues, sampling rate etc.</li>
+										</ol>
+									</div>
+
+								</div>
+							<div class="remark" style="margin-top: 1em;">Only the __digital representation__ is used in this presentation</div>
+							</textarea>
+				</section>
+
+				<section data-markdown>
+							<textarea data-template>
+								# Deterministic and random signals
+								## Deterministic signal
+								* The value at every moment is known (periodicity, symmetry)
+								* Easy to reconstruct the entire signal from one period
+
+								## Random signal
+								* For a signal$n \mapsto x(n)$, each sampling is not perfectly predictible
+								* In general,$x(n) \sim \mathcal{L}_n$ which means "follows a$\mathcal{L}_n$ probability law"
+
+								<img src="figures/D-R.jpg" alt="" style="background-color ; margin-top: 0.5em;" width="95%">
+								<div class="remark">Only __random signals__ are studied in this presentation</div>
+							</textarea>
+				</section>
+
+				<section>
+								<h1> Stochastic signal models</h1>
+								<h2>Definition</h2>
+								<ul>
+									<li>Let$\mathcal{N}$ be a countable or uncoutable set (e.g.$\lbrace{0, ..., N\rbrace},~\mathbb{R},~\mathbb{C}$)</li>
+									<li>A <b>stochastic process</b>$\left(x(n)\right)_{n \in \mathcal{N}}$ is a family (usually infinite) of random variables indexed by$n$</li>
+									<li>A stochastic process is usually characterized by two statistical parameters:
+											<p style="text-align:center;">
+												$ \begin{array}{rccll}
+													\mu_x :& n & \mapsto & \mathbb{E}\left(x(n)\right) & \text{Mean} \\
+												C_x :& (n, n') & \mapsto & \mathbb{E}\left[\left(x(n)-\mu_x \right) \left(x(n')-\mu_x \right)^{\star}\right] &  \text{Covariance}
+													\end{array}
+												$
+											</p></li>
+							  </ul>
+               <img src="figures/alpha-stable-process.png" style="margin-left:7.5em;" alt="" width="65%">
+				</section>
+				<section class="cover" data-background="figures/background.jpg" data-state="no-title-footer no-progressbar has-dark-background">
+					<h2 id='coverh2'>I-B: Audio signal processing</h2>
+					<aside class="notes">
+					<ul><li>On s'intéresse au traitement du signal audio et en particulier à la séparation (expliquer)</li></ul>
+					</aside>
+				</section>
+
+				<section>
+				  <h1>Time representation <em>vs</em> time-frequency domain</h1>
+						<div class="affirmation" style="margin-top:-0.2em; margin-bottom:0.5em;">$t$ represents a <span style="font-weight:bold;">time frame</span> and$f$ a <span style="font-weight:bold;">frequency bin</span> </div>
+							<div class='multiCol'>
+								<div class='col'>
+									<span style="font-weight:bold;">Time representation</span></br>
+		              &nbsp&nbsp&nbsp $\rightarrow~~~ x\left(t\right)\in \mathbb{R}$ is an input discrete time signal representation sampled every period$\tau$</br>
+									<video style="float:left; margin-top:1em; margin-bottom:1em; box-shadow: 5px 5px 15px grey;" controls width='100%'>
+										<source data-src="figures/video/time_domain.webm" type="video/webm" />
+									</video>
+                  <ol>
+										<li style="color:green; list-style-type:circle;">Direct amplitude representation</li>
+										<li style="color:red; list-style-type:circle;">No information about high and low frenquencies</li>
+									</ol>
+								</div>
+								<div class='col'>
+						    	<span style="font-weight:bold;">Short-Time Fourier Transform (STFT)</span></br>
+									&nbsp&nbsp&nbsp $\rightarrow~~~$ Fourier transform + multiplication with a <span style="font-style: italic;">window function</span>$w$ on each time frame:</br>
+
+									<span style = "text-align:center;">$$x\left(f,\tau\right) = \int_{-\infty}^{+\infty}x\left(t\right)w\left(t-\tau\right)e^{-ift}dt \in \mathbb{C}$$</span>
+									<video style="float:left; margin-top:1em; margin-bottom:1em; box-shadow: 5px 5px 15px grey;" controls width='100%'>
+										<source data-src="figures/video/TF_domain.webm" type="video/webm" />
+									</video>
+									<ol>
+										<li style="color:green; list-style-type:circle;">Amplitude + frequency information</li>
+									</ol>
+								</div>
+            </div>
+						<div class="remark" style="margin-top: 0.8em;">The STFT is used in this presentation.</div>
+				</section>
+
+				<section>
+					<h1>Audio Source Separation</h1>
+					<img src="figures/audio_source_separation.png" alt="" width="100%">
+					<div class="question">Which probabilistic laws are stable by linear combination ?</div>
+				</section>
+
+				<section>
+					<h1>$\alpha-$ stable distribution</h1>
+					<aside class="notes">
+						<ul><li>the linear combination of the copies are distributed as a linear combination of the stable vector X</li></ul>
+					</aside>
+					<h2>Definition</h2>
+							Let $\bold{X}^{(1)},\bold{X}^{(2)}$ be two independents copies of a random vector$\bold{X}$.$\bold{X}$ is stable iff $\forall~a, b>0$ $\exists c\in\mathbb{R}$
+							and a vector$\bold{D}$ such that:
+							<span style="text-align:center;">$$a\bold{X}^{(1)}+b\bold{X}^{(2)} \sim c\bold{X}+\bold{D}$$</span></center>
+							where$\sim$ denotes equality in distribution.
+							<ul style="margin-top:0.5em;">
+								<li>$\exists\color{blue}{\alpha}\in(0,2],\:c^{\color{blue}{\alpha}}=a^{\color{blue}{\alpha}}+b^{\color{blue}{\alpha}}$ called <span style="font-weight:bold;">characteristic exponent</span></li>
+								<li>the smallest$\color{blue}{\alpha}$ is, the heavier are the tails of the distribution</li>
+							</ul></br>
+					  	<span style="margin-left:8em;"><img src="figures/tails.png" alt="" width="50%"></span>
+				</section>
+
+				<section>
+					<h2>Properties</h2>
+					<ul><li>A linear combination of$\alpha-$ stable distributions is an$\alpha-$ stable distribution</li>
+					<li>If$x$ is an$\alpha-$stable variable and$p\geq \alpha$, then$\mathbb{E}\left(|x|^p\right)=+\infty$</li>
+					<li>Moreover, its <span style="font-weight:bold;">characteristic function</span> $\varphi_x:\theta\mapsto\mathbb{E}\left[\text{exp}\left(i\theta x\right)\right]$ is</li>
+				  </ul>
+				<p>$$ \forall \theta \in \mathbb{R},~\varphi_x\left(\theta\right) = \begin{cases}
+\exp\left[i\theta\color{purple}{\mu}-\left|\color{green}{\sigma} \theta\right|^{\color{blue}{\alpha}}\left(1-i\color{red}{\beta}\text{sign}\left(\theta\right)\tan\left(\frac{\pi\color{blue}{\alpha}}{2}\right)\right)\right] & \color{blue}{\alpha}\neq1\\
+\exp\left[i\theta\color{purple}{\mu}-\left|\color{green}{\sigma} \theta\right|\left(1-i\color{red}{\beta}\text{sign}\left(\theta\right)-\frac{2}{\pi}\ln\left|\theta\right|\right)\right] & \color{blue}{\alpha}=1
+\end{cases}$$</br>
+&nbsp&nbsp&nbsp $\rightarrow~~~ \color{blue}{\alpha}$: <span style="font-weight:bold;">characteristic exponent</span> $\text{(heaviness of the tails)}$</br>
+&nbsp&nbsp&nbsp $\rightarrow~~~ \color{red}{\beta}$: <span style="font-weight:bold;">skewness parameter</span> $\text{(measure of asymmetry)}$</br>
+	&nbsp&nbsp&nbsp $\rightarrow~~~ \color{purple}{\mu}$: <span style="font-weight:bold;">shift parameter</span> $\text{(localize the mode)}$</br>
+	&nbsp&nbsp&nbsp $\rightarrow~~~ \color{green}{\sigma}^\color{blue}{\alpha}$: <span style="font-weight:bold;">scale parameter</span> $\text{(measure of the width)}$
+	</p>
+	<div class= "affirmation">
+		<span style="text-align:center;">for $\alpha \notin \{0.5,1,2\}$, <span style="font-weight:bold;">no closed-form</span> of probabilistic density function</span>
+	</div>
+					<!-- <h2> Symmetric $\alpha-$stable distributions</h2>
+					<ul>
+						<li>$x$ $\alpha-$stable and $x \sim -x \Rightarrow x \sim S\alpha S\left(\sigma\right)$ ($\sigma>0:$ <span style="font-weight:bold;">scale parameter</span>)</li>
+					</ul> -->
+				</section>
+				<section>
+					<h2> Symmetric $\alpha-$stable distributions</h2>
+					<ul>
+						<li>$x$ $\alpha-$stable and $x \sim -x \Rightarrow x \sim S\alpha S\left(\sigma^\alpha\right)$ ($\sigma^\alpha>0:$ <span style="font-weight:bold;">scale parameter</span>)</li>
+					</ul>
+					 <span style="margin-left:0em;"><img src="figures/pdf_alpha.png" alt="" width="100%"></span>
+				</section>
+				<section>
+					<h1> $\alpha=2$: Wide-Sense Stationary Gaussian Process (WSS-GP)</h1>
+					<h2>Definition</h2>
+					A stochastic process$\left(x\left(n\right)\right)_{n\in \mathcal{N}}$ is <b>wide-sense stationary gaussian</b> (WSS-GP) iff. </br>
+					<ul>
+						<li>The mean$\mu_{x}$ is <b>independent of $n$</b></li>
+						<li>The covariance$C_x\left(n,n'\right)\triangleq k_x\left(n'-n\right)$ <span style="font-weight:bold;">depends only on</span>$n'-n$</li>
+						<li>$\forall L, n_1,\cdots,n_L;~$ $x\left(n_1\right), \cdots, x\left(n_L\right)$ are jointly Gaussian random variables</li>
+					</ul>
+					<h2> Property</h2>
+					Let$\tilde{\bold{x}}$ be an outcome of a WSS-GP and$\bold{x}\triangleq\mathcal{F}\left(\bold{\tilde{x}}\right)$ its discrete Fourier transform.
+					<ul>
+						<li>Then, all entries of$\bold{x}$ are <span style="font-weight:bold;">independents</span> and</li>
+					</ul>
+					<img src="figures/isotropic_gaussian_PSD.png" style="margin-left:5em; margin-top:1em;" alt="" width="70%">
+					<!-- <div class="affirmation">
+						<span style="font-weight:bold;">Example of $C_x$ (for smooth functions)</span><br/>
+						 	$$ C_x\left(n,n'\right) = \sigma^2\exp\left(-\frac{(n-n')^2}{\lambda^2}\right)$$
+					</div> -->
+					<div class="question" style="margin-top:1em;">Generalization for$\alpha\neq2$ ?</div>
+				</section>
+
+				<section>
+					<h1>$\alpha-$ Harmonizable Processes</h1>
+							<h2 style="margin-top:-0.8em;">$\alpha-$ stable Isotropic Distribution</h2>
+								<ul>
+									<li> A complex random variable$x=\Re\left(x\right)+i\Im\left(x\right)$ is an$\alpha-$ stable isotropic distribution iff
+									$\left[\Re\left(x\right)\Im\left(x\right)\right]^\top$ is a stable vector and$\forall\phi\in[0,2\pi),\:e^{i\phi}X\sim X$</li>
+									<li>
+										$x\sim S\alpha S_c\left(\sigma\right)$ is fully described by$\alpha$ and a <b>scale parameter</b>$\sigma\geq0$
+									</li>
+								</ul>
+							<h2>$\alpha-$ harmonizable processes</h2>
+							<ul><li>
+								$\bold{x}$ is an$\alpha-$ harmonizable process$\Leftrightarrow$ the samples$x(n_1), \cdots,x(n_L)$ of the Fourier transform of$\bold{x}$
+								are$S\alpha S_c$ distributed and independents
+							</li>
+
+						</ul>
+         <div class="affirmation">Generalizes the stability of spectral representation. Filtering method available$\forall \alpha \in \left(0,2\right]$ ?</div>
+				</section>
+        <section>
+				<h1 style="margin-bottom:-0.05em;">Fractional power spectrograms &$\alpha-$Wiener filtering</h1>
+			  Consider an$\alpha-$harmonizable ($\alpha=2 \Rightarrow$ WSS-GP) additive mixture$\bold{x}=\sum_{j=1}^{J}\bold{y}_j$ of sources$\bold{y}_1,\cdots,\bold{y}_J$:
+				<span style="text-align:center";>$$\begin{array}{lccl}
+				\forall j,f,t; & y_{j}\left(f,t\right) & \sim & S\alpha S_{c}\left(\sigma_{j}^{\alpha}\left(f,t\right)\right)\\
+				\forall f,t; & x\left(f,t\right) & \sim & S\alpha S_{c}\left(\sum_{j}\sigma_{j}^{\alpha}\left(f,t\right)\right)
+				\end{array}$$</span>
+				<ul>
+					<li>
+					The separation task can be achieved by the following$\alpha-$Wiener filtering:
+					<span style="text-align:center;">$$
+					\mathbb{E}\left[y_j\left(f,t\right)~|~ x\left(f,t\right),\left\{\sigma_j^{\alpha}\left(f,t\right)\right\}_{j,f,t}\right] = \frac{\sigma_j^{\alpha}\left(f,t\right)}{\sum_{j^{\prime}}\sigma_{j^{\prime}}^{\alpha}\left(f,t\right)}x\left(f,t\right)
+					$$</span>
+					</li>
+					<li>
+								Classical Assumption for$\alpha=2$ and extension:
+					</li>
+			</ul>
+			<img src="figures/fractional_spectrogram.png" style="margin-left:8em; margin-top:1em;" alt="" width="50%">
+			<div class="affirmation">Equality well-verified for <span style="font-weight:bold;">$\alpha=1.2$</span> (wrt. [Liutkus 2015]). How estimate$\sigma_j^\alpha\left(f,t\right)$ ?</div>
+				<div class="references" style="float:left; font-size:18px; margin-top:0.5em;">
+					<ul><li>Liutkus, A., & Badeau, R. (ICASSP 2015, April). Generalized Wiener filtering with fractional power spectrograms.</li></ul>
+				</div>
+				</section>
+
+				<section>
+					<h1>Parameters Estimation</h1>
+					<h2>Maximum Likelihood (for $\alpha\in \{0.5, 1,2\}$)</h2>
+					Let$\Theta \triangleq \{\sigma_j\left(f,t\right)\}_{j,f,t}$ be the parameters to estimate.
+					<ul>
+						<li>
+							Idea: maximize$p\left(x \left(f,t\right)\mid \Theta\right)$ w.r.t.$\Theta$. Equivalent to the following update:
+						</li>
+					</ul>
+					<span style="text-align:center;">
+						$$ \begin{array}{cccr}\Theta^{\star}& \leftarrow & \arg\min_{\Theta}\sum_{f,t}-\log p\left(x\left(f,t\right)|\Theta\right).& \text{Maximum likelihood estimation (MLE)}\end{array}$$
+					</span>
+
+					<h2>Fractional lower-order moments (FLOM)</h2>
+						<span style="text-align:center;">$$
+							\forall p \in (0,\alpha),~~ \mathbb{E}\left[\left|X\right|^p\right] = C\left(p,\alpha\right) \sigma ^{p/\alpha};~~ C\left(p,\alpha\right)
+							 = \frac{2^{p+1}\Gamma\left(\frac{p+1}{2}\right)\Gamma\left(-p/\alpha\right)}{\alpha\sqrt{\pi}\Gamma\left(-p/2\right)}
+
+						$$</span>
+					<ul>
+						<li>
+						We can calculate moments of different orders to estimate$\sigma_j\left(f,t\right)$
+						</li>
+					</ul>
+					<h2> Conditionnal gaussianity (detailed further on)</h2>
+					<ul>
+						<li>
+						$x\sim S\alpha S_c(\sigma^\alpha) \Leftrightarrow x \mid \phi \sim \mathcal{N}_c(0, \phi\sigma^{\alpha/2})$; $\phi \sim \mathcal{P}\frac{\alpha}{2}S (2\cos(\frac{\pi\alpha}{4})^{2/\alpha})$
+						</li>
+						<li>
+							Estimate$\phi$ using a Metropolis-Hastings approach and apply a$2-$Wiener filter
+						</li>
+					</ul>
+					<div class="references" style="float:left; margin-top:0.2em; font-size:18px;">
+						<ul><li>Nikias, C. L., & Shao, M. (1995). Signal processing with alpha-stable distributions and applications.</li>
+						<li>Şimşekli, U., Liutkus, A., & Cemgil, A. T. (SPL, 2015). Alpha-stable matrix factorization</li>
+						<li>Liutkus, A., Fitzgerald, D., & Badeau, R. (2015, October). Cauchy nonnegative matrix factorization.</li>
+						</ul>
+					</div>
+				</section>
+
+				<section>
+					<h1>Outline</h1>
+					<h2>II - Audio Source Localization</h2>
+					<h2>III - Multivariate$\alpha-$stable Filtering Theory</h2>
+					<h2>IV - Hybrid Model and Single-channel Speech Enhancement</h2>
+
+					<h2> V - Conclusion</h2>
+					<div class="references" style="float:left; margin-top:0.2em;">
+						<ul><li>M Fontaine, C Vanwynsberghe, A Liutkus, and R Badeau.(EUSIPCO, 2017) Scalable source localization with multichannel alpha-stable distributions.</li>
+						<li>M Fontaine, C Vanwynsberghe, A Liutkus, and R Badeau.(LVA/ICA, 2017) Sketching for nearfield acoustic imaging of heavy-tailed sources.</li>
+						<li>M Fontaine, A Liutkus, L Girin, and R Badeau.(WASPAA, 2017) Explaining the parameterized Wiener filter with alpha-stable processes.</li>
+						<li>Fontaine, M., Stöter, F. R., Liutkus, A., Şimşekli, U., Serizel, R., & Badeau, R. (LVA/ICA, 2018). Multichannel Audio Modeling with Elliptically Stable Tensor Decomposition.</li>
+						<li>M Fontaine, A Liutkus, and R Badeau.(2018) Multivariate Alpha-stable Filtering (Submitted).</li>
+						</ul>
+					</div>
+				</section>
+				<section class="cover" data-background="figures/background.jpg" data-state="no-title-footer no-progressbar has-dark-background">
+								<h2 id='coverh2'>II: Audio Source Localization</h2>
+							</section>
+							<section>
+								<h1>Problem Statement</h1>
+									<img src="figures/acoustic_loc.png" alt="" style="float:center; background-color;" width="100%">
+									<ul><li>Given several microphones$x_{1},\cdots,x_{K}$ randomly positioned</li>
+											<li>Localize audio sources$s_{1},\cdots,s_{L}$ by estimating their magnitudes</li>
+									</ul>
+							</section>
+
+							<section>
+								<h1>Acoustic & Probabilistic Modeling</h1>
+								<h2>Mixing model</h2>
+								STFT observations at TF bins$\left(f,t\right)$ denoted by$\bold{x}\left(f,t\right)\in\mathbb{C}^{K}$ are approximated by:
+								<span style="text-align:center;"></br></br>
+								$$\forall\left(f,t\right),\:\bold{x}\left(f,t\right)\simeq\sum_{l=1}^{L}\bold{A}_{l}\left(f\right)s_{l}\left(f,t\right)$$
+								</span>
+								<ul><li>$\bold{A}_{l}\left(f\right)\in\mathbb{C}^{K}$: frequency response at the$l^{th}$ position in the room at frequency band$f$ or steering vector
+								(depend on the acoustic model)</li></ul>
+								<h2>Probabilistic model</h2>
+								We assume the following probabilistic model
+								<ul></br>
+									<span style="text-align:center;">$$s_{l}\left(f,t\right)\sim S\alpha S_{c}\left(\Upsilon_{l}\right)$$</span></br>
+									<li>$\bold{\Upsilon}=\left[\Upsilon_{1},\cdots,\Upsilon_{L}\right]^{\top}$:<b> discrete spatial measure</b>$\Rightarrow$ amplitude of each potential source in the room</li>
+							</ul>
+						</section>
+						<section>
+							<h1 style="margin-top:-0.5em;">Levy Exponent</h1>
+								The$\alpha-$ stable theory provides the following analytical form:</br>
+									<img src="figures/levy_theorem.png" alt="" style="margin-top:0.2em; margin-left: 7em; margin-bottom:0.4em;" width="60%">
+									Choosing$\left[\bold{\Psi}_{f}\right]_{l'l}=\left|\left\langle \bold{a}_{l'}\left(f\right),
+											\bold{a}_{l}\left(f\right)\right\rangle \right|^{\alpha}$  yields:
+
+								<img src="figures/psi_I.png" alt="" style="margin-top:0.4em; margin-left: 7em;" width="60%">
+						<div class="references" style="float:left; margin-top:0.2em;">
+							<ul><li>M Fontaine, C Vanwynsberghe, A Liutkus, and R Badeau.(2017) Sketching for nearfield acoustic imaging of heavy-tailed sources.</li>
+						</ul>
+					</div>
+							</section>
+
+							<section>
+								<h1 style="margin-top:-0.8em;">Parameters Estimation</h1>
+
+						<center><img src="figures/outline_loc.png" alt="" style="float:center; background-color;margin-top:-1.2em; margin-bottom:0.4em;" width="60%"></center>
+			Data fit cost function: $\hat{\bold{\Upsilon}}\leftarrow\arg\min_{\bold{\Upsilon}\geq0}
+									d_{\beta}\left(\hat{\bold{I}}|\bold{\Psi}\bold{\Upsilon}\right)+\lambda\|\bold{\Upsilon}\|_{1}$</br></br>
+									<span style="text-align:center;">$$\hat{\bold{\Upsilon}}\leftarrow\hat{\bold{\Upsilon}}
+										\cdot\frac{\bold{\Psi}^{\top}\left(\left(\bold{\Psi}\hat{\bold{\Upsilon}}\right)^{\beta-2}
+										\cdot\hat{\bold{I}}\right)}{\bold{\Psi}^{\top}\left(\left(\bold{\Psi}\hat{\bold{\Upsilon}}\right)^{\beta-1}\right)+\lambda}$$</span>
+										</br>	<ul><li>$d_{\beta}, \lambda\|\bold{\Upsilon}\|_{1}$: $\beta-$ divergence and$\ell_{1}-$regularization penalty</li>
+																		<li><b>Sketching approach</b>: data only used once for estimating the Levy exponent </li>
+											</ul>
+								<div class="references" style="float:left; margin-top:0.2em;">
+									<ul><li>N Keriven and al. (2016, March). Sketching for large-scale learning of mixture models.</li>
+								</ul>
+							</div>
+							</section>
+
+							<section>
+								<h1>Evaluation</h1>
+								<ul><li>$J=5$ speech signals distributed randomly on a $5~\text{x}~4$ m plane within a  $5~\text{x}~4~\text{x}~3$ meters simulated room with a $0.4$s reverberation time</li>
+										<li>Featuring up to K=50 microphones at random positions</li>
+										<li>Comparison between DSM, Steering response power (SRP), RELAX and CLEAN algorithms</li>
+										<li>$\beta=0$, $\alpha=1$ (Cauchy case) and $\lambda=1$</li>
+										<li>2500 trial simulations are carried out</li>
+										<li>Evaluated by correlations between the estimated and ground truth maps</li>
+								</ul>
+								<div class="multiCol">
+									<div class="col">
+										<img src="figures/correlation_trueA.png" alt="" style="float:center; background-color;" width="90%">
+										<ul><li>$\bold{A}_l\left(f\right):$ Fourier transform of the room impulse responses</li></ul>
+									</div>
+								<div class="col">
+									<img src="figures/correlation_Aacoustic.png" alt="" style="float:center; background-color; margin-top:0.4em;" width="100%">
+									<ul><li>$\left[\bold{A}_{l}\left(f\right)\right]_{k}=\frac{1}{r_{kl}}\exp\left(-i\frac{\omega_{f}r_{kl}}{c_{0}}\right)$: Nearfield region assumption</li></ul>
+								</div>
+							</div>
+							</section>
+							<section>
+								<h1>Conclusion & Future Works</h1>
+								<ul><li>A new competitive method for acoustic imaging</li>
+								<li>Requires going through the observed multichannel signals only once in order to estimate$\bold{\Upsilon}$</li>
+								<li>Wide range of possible robust models$\left(0<\alpha<2\right)$</li>
+								<li>Future work may include time-varying DSM and an experimental validation of robustness to noise</li>
+								</ul>
+								<center><img src="figures/heatmap.png" alt="" style="float:center; background-color; margin-top:0.4em;" width="34%"></center>
+								<div class="references" style="float:left; margin-top:0.2em;">
+									<ul><li>M Fontaine, C Vanwynsberghe, A Liutkus, and R Badeau.(2017) Sketching for nearfield acoustic imaging of heavy-tailed sources.</li>
+										<li>M Fontaine and al. (2017) Scalable source localization with multichannel alpha-stable distributions.</li>
+								</ul>
+							</div>
+							</section>
+
+
+									<section class="cover" data-background="figures/background.jpg" data-state="no-title-footer no-progressbar has-dark-background">
+												<h2 id='coverh2'>III - Multivariate$\alpha -$stable Filtering Theory</h2>
+											</section>
+											<section>
+												<aside class="notes">
+													<!-- <ul><li>Le théorème de représentation signifie qu'un vecteur aléatoire alpha stable est distribué
+										comme une somme infiniement nombreuses de contributions de vecteur aléatoire alpha stable, venant de toutes les directions sur la sphère.</li>
+										<li>densité spatiale: interprétée comme l'intensité des contributions pointant en chacune de ses directions.</li></ul> -->
+												 The
+												 representation theorem means that an SαS c K random vector is
+												 distributed as the sum of infinitely many contributions, coming
+												 from all directions θ ∈ S K on the sphere. Γ x (dθ) may thus be
+												 interpreted as the scale factor of the contributions pointing in
+												 the direction θ
+												</aside>
+												<h1>Spatial Representation (1/2)</h1>
+												<h2>Spatial density</h2>
+												<ul><li>$\bold{x},\varphi_x$: complex random vector in $\mathbb{C}^{K}$ and its characteristic function (chf.)</li>
+													<li>An isotropic vector is fully described by its chf. :</li></ul>
+													<span style="text-align:center;">$$\forall\bold{\theta}'\in\mathbb{C}^{K},\:\varphi_{\bold{x}}\left(\bold{\theta}'\right)=
+														\exp\left(-\int_{\bold{\theta}\in\mathcal{S}_{\mathbb{C}}^{K}}\left|\left\langle \bold{\theta}',
+														\bold{\theta}\right\rangle \right|^{\alpha}\Gamma_{\bold{x}}\left(d\bold{\theta}\right)\right)$$</span>
+													<ul><li>$\Gamma_{\bold{x}}$: symmetric real measure on the hypersphere$S_{\mathbb{C}}^{K}$ called the <b>spatial density</b></li>
+														<li>We thus write$\bold{x}\sim S\alpha S_{c}^{K}\left(\Gamma_{\bold{x}}\right)$ to be an isotropic distribution controlled by $\Gamma_{\bold{x}}$</li></ul>
+													<h2>Spatial spectrum</h2>
+													<ul><li>$\mathcal{X}$ is a <b>Spatial Spectrum</b> with control density $\Gamma_{\bold{x}}$ iff</br>
+													&nbsp&nbsp&nbsp$\rightarrow~~~\forall A\subset\mathcal{B}\left(S_{\mathbb{C}}^{K}\right),~~\mathcal{X}\left(A\right)\sim S\alpha S_{c}\left(\Gamma_{\bold{x}}\left(A\right)\right)$</br>
+													&nbsp&nbsp&nbsp$\rightarrow~~~ \forall A,B\subset\mathcal{B}\left(S_{\mathbb{C}}^{K}\right),~~A\cap B=\emptyset,
+													 \mathcal{X}\left(A\right)$ and$\mathcal{X}\left(B\right)$ are independents a.s.</br></li>
+													</ul>
+													<div class="references" style="float:left; margin-top:0.5em;">
+														<ul><li>Samoradnitsky, G. (1995). Stable non-Gaussian random processes.</li></ul>
+													</div>
+											</section>
+											<section>
+											<h1>Spatial Representation (2/2)</h1>
+											<h2>Spatial representation theorem</h2>
+											<span style="text-align:center;">$$
+											\bold{x}\sim S\alpha S_{c}^{K}\left(\Gamma_{\bold{x}}\right) \Leftrightarrow \bold{x}=^d\int_{\bold{\theta}\in\mathcal{S}_{\mathbb{C}}^{K}}\bold{\theta}\mathcal{X}\left(d\bold{\theta}\right)
+											$$</span>
+											<img src="figures/vector_decomposition.png" alt="" style="float-align:center; margin-top:0.5em; margin-left:3.5em;" width="100%">
+
+											</section>
+											<section>
+											<h1>Mixture of$\alpha-$ stable vectors</h1>
+											<div class="multiCol">
+												<div class="col">
+													<center><img src="figures/VM_sources.png" alt="" style="float:center; background-color; margin-top:-0.4em;" width="90%"></center>
+												</div>
+												<div class="col">
+													<center><img src="figures/VM_mix.png" alt="" style="float:center; background-color; margin-top:-0.4em;" width="92%"></center>
+												</div>
+											</div>
+											We assume that:</br>
+											<ul><li>$\bold{x}=\sum_{j=1}^{J}\bold{y}_{j};~~\forall j,\,\bold{y}_{j}\sim S\alpha S_{c}^{K}\left(\Gamma_{j}\right) \Rightarrow \bold{x}\sim S\alpha S_{c}^{K}\left(\Gamma_{\bold{x}}\triangleq\sum_j\Gamma_j\right)$</li>
+											<li>The representation theorem gives : $\forall j,\:\bold{y}_{j}=^d\int_{\bold{\theta}\in\mathcal{S}_{\mathbb{C}}^{K}}\bold{\theta}\mathcal{Y}_{j}\left(d\bold{\theta}\right) \Rightarrow \mathcal{X}\triangleq\sum_{j}\mathcal{Y}_{j}$
+											 defines a spatial spectrum associated to$\bold{x}$</li>
+											</ul>
+											</section>
+
+											<section>
+												<h1>Spatial spectrum filter</h1>
+												<h2>Estimator Criterion</h2>
+												<ul><li>$\hat{\mathcal{X}}\left(d\bold{\theta}\right)$ such that for any function$\psi$ satisfying
+													 $\int_{\bold{\theta}\in S_{\mathbb{C}}^{K}}\left|\psi\left(\bold{\theta}\right)\right|^{\alpha}\Gamma_{\bold{x}}\left(d\bold{\theta}\right)<+\infty$:</li>
+												</ul>
+												<span style="text-align:center;">$$\mathbb{E}\left[\int_{\bold{\theta}\in\mathcal{S}_{\mathbb{C}}^{K}}\psi\left(\bold{\theta}\right)
+													\mathcal{X}\left(d\bold{\theta}\right)\,\bigg|\,\bold{x}\right]=
+													\int_{\bold{\theta}\in\mathcal{S}_{\mathbb{C}}^{K}}\psi\left(\bold{\theta}\right)\hat{\mathcal{X}}\left(d\bold{\theta}\right)$$</span>
+												<h2>Estimation of$\mathcal{X}$</h2>
+													<ul><li>$\hat{\mathcal{X}}\left(d\bold{\theta}\right)$ can be rewritten as $g_{_{_\mathcal{X}}}\left(\bold{x},\bold{\theta}\right)\Gamma_{x}\left(d\bold{\theta}\right)$ where$g_{_{_\mathcal{X}}}$ is a fraction of two integrals along the hypersphere$\mathcal{S}_{\mathbb{C}}^{K}$ which depends
+														of $\theta$, the Lévy-exponent $I_x \triangleq-\log \varphi_x$ and two series which can be pre-computed</li>
+													</ul>
+												<h2>Separation</h2>
+												<ul><li> We proved that:</li></ul>
+												<span style="text-align:center;">$$\hat{\bold{y}}_{j}\triangleq\mathbb{E}\left[\bold{y}_{j}\big|\bold{x}\right]=
+													\int_{\bold{\theta}\in\mathcal{S}_{\mathbb{C}}^{K}}\bold{\theta}g_{_{_\mathcal{X}}}\left(\bold{x},\bold{\theta}\right)\Gamma_{j}(d\bold{\theta})$$</span>
+											</section>
+
+											<section>
+												<h1> Covariation-minimizing filter (1/2)</h1>
+												<h2> Covariation & Covariation norm</h2>
+												<ul><li> No $2^{nd}-$ order statistics for $\alpha < 2$</li>
+												<li style="margin-bottom:0.3em;"> For $\alpha >1$ and $\bold{x}\triangleq\left(x_1,x_2\right)\sim S\alpha S_c^2\left(\Gamma_{\bold{x}}\right)$ the <b>covariation</b> is:
+												</ul>
+												<span style="text-align:center;">$$\left[x_{1},x_{2}\right]_{\alpha}\triangleq\int_{z=
+													\left(z_{1},z_{2}\right)\in\mathcal{S}_{\mathbb{C}}^{2}}z_{1}z_{2}^{\left\langle \alpha-1\right\rangle }\Gamma_{x}\left(dz\right)$$</span>
+												<ul><li style="margin-top:0.3em;">$\forall z\in\mathbb{C},\:z^{\left\langle \alpha\right\rangle }=
+													z^{\star}\left|z\right|^{\alpha-1}$: signed power function</li>
+													<!-- Let$\mathfrak{S}_{\alpha}$ be the linear space of jointly$S\alpha S_{c}$. For $x\in\mathfrak{S}_{\alpha}$ and $\alpha>1$ -->
+													<li> The <b>covariation norm</b> is:</li>
+												</ul>
+												<span style="text-align:center;">$$\left\Vert x\right\Vert {}_{\alpha}=\left(\left[x,x\right]_{\alpha}\right)^{1/\alpha}$$</span>
+												<h2>Covariation filtering technique</h2>
+												<ul>
+												<li> Linear estimator$\hat{y}_{jk}=\left\langle \bold{w}_{jk},\bold{x}\right\rangle$ + enforcement of perfect separation$\sum_{j}\bold{w}_{jk}=\bold{e}_{k}$</li>
+												<li style="margin-top:0.3em;"> For each entries $k$, we have the following optimization problem:</li>
+											</ul>
+											<span style="text-align:center">$$\begin{array}{cc}
+														{\text{minimize}}_{\bold{w}_{jk}} & \sum_{j}\left\Vert y_{jk}-\left\langle \bold{w}_{jk},\bold{x}\right\rangle \right\Vert _{\alpha}^{\alpha}\\
+														\text{subject to} & \sum_{j}\bold{w}_{jk}=\bold{e}_{k}.
+														\end{array}$$</span>
+											</section>
+
+											<section>
+												<h1> Covariation-minimizing filter (2/2)</h1>
+												<h2>Optimization problem</h2>
+												<ul><li>Karush-Kuhn-Tucker conditions are verified $\Rightarrow$ Existence of a unique solution</li>
+												<li style="margin-bottom:0.9em;"> Equivalent to solve the following fixed-point problem:</li>
+												</ul>
+												<span style="text-align:center;">$$\bold{P}_{jk}\leftarrow\int\left(\frac{\bold{\theta}\bold{\theta}^{\star}}{\left|\theta_{k}-\left\langle \bold{w}_{jk},\bold{\theta}\right\rangle \right|^{2-\alpha}}-\frac{\bold{\theta}\bold{\theta}^{\star}}{\left|\left\langle \bold{w}_{jk},\bold{\theta}\right\rangle \right|^{2-\alpha}}\right)\Gamma_{j}\left(d\bold{\theta}\right)+\int\frac{\bold{\theta}\bold{\theta}^{\star}}{\left|\left\langle \bold{w}_{jk},\bold{\theta}\right\rangle \right|^{2-\alpha}}\Gamma_{x}\left(d\bold{\theta}\right).$$</br>
+												$$\bold{\lambda}_{k}\leftarrow\left(\sum_{j}\bold{P}_{jk}^{-1}\right)^{-1}\left(
+												\sum_{j}\bold{P}_{jk}^{-1}\int\frac{\bold{\theta}\theta_{k}^{\star}}
+												{\left|\theta_{k}-\left\langle \bold{w}_{jk},\bold{\theta}\right\rangle \right|^{2-\alpha}}
+												\Gamma_{j}\left(d\bold{\theta}\right)-\bold{e}_{k}\right)$$</br>
+												$$\bold{w}_{jk}\leftarrow\bold{P}_{jk}^{-1}\left(\int\frac{\bold{\theta}\theta_{k}^{\star}}
+												{\left|\theta_{k}-\left\langle \bold{w}_{jk},\bold{\theta}\right\rangle \right|^{2-\alpha}}
+												\Gamma_{j}\left(d\bold{\theta}\right)-\bold{\lambda}_{k}\right)$$
+												</span>
+												<h2> Reconstruction </h2>
+												<ul><li>Use the estimated mask$\bold{w}_{jk}$:</li></ul><span style="text-align:center;">$$\forall j,k,\hat{y}_{jk}=\left\langle \bold{w}_{jk},\bold{x}\right\rangle $$</span>
+											</section>
+											<section>
+												<h1>The Gaussian$\alpha\rightarrow2$ case</h1>
+												<ul><li>In theory, the previous method do not hold for $\alpha=2$ (non uniqueness of $\Gamma_{\bold{x}}, \Gamma_j$) </li>
+												<li> when $\alpha\rightarrow2$, we get:</li>
+												</ul>
+												<span style="text-align:center;">$$\bold{P}_{jk}=\bold{P}=\int\bold{\theta}\bold{\theta}^{\star}\Gamma_{\bold{x}}\left(d\bold{\theta}\right)$$</span>
+												<ul><li style="margin-top:0.8em; margin-bottom:0.8em;">Thus, it can be proved that: $\bold{x}\sim \mathcal{N}_c\left(0;\bold{P}\right)$ and $\bold{y}_j \sim \mathcal{N}_c\left(0;\bold{P}_j\right)$ where:</li></ul>
+												<span style="text-align:center;">$$\bold{P}_{j}=\int\bold{\theta}\bold{\theta}^{\star}\Gamma_{j}\left(d\bold{\theta}\right)$$</span>
+												<ul><li style="margin-bottom:0.8em;">The estimates $\hat{\bold{y}}_{j}$ become the classical multichannel Wiener filter:</li></ul>
+												<span style="text-align:center;">$$\hat{\bold{y}}_{j}=\bold{P}_{j}\left(\sum_{j'}\bold{P}_{j'}\right)^{-1}\bold{x}$$</span>
+											</section>
+
+											<section>
+											<h1>Assessments</h1>
+											<div class="affirmation" style="margin-top:-0.8em;">We assume the knowledge of the spatial densities$\Gamma_j, ~\forall j$</div>
+											<h2 style="margin-top:0.8em;">Filtering methods</h2>
+											<ul><li><b>MWF</b>: $\alpha \rightarrow 2$ case using the true $\Gamma_j$ in$\bold{P}_{j}=
+												\int\bold{\theta}\bold{\theta}^{\star}\Gamma_{j}\left(d\bold{\theta}\right)$</li>
+												<li><b>$\alpha-$SSF</b>: Spatial spectrum filter with a direct estimation of$g_{_{_\mathcal{X}}}\left(\bold{x},\bold{\theta}\right)$</li>
+												<li><b>$\alpha-$CMF</b>: Covariation-minimizing filter with$50$ iterations for the fixed-point method</li></ul>
+													<h2> Integral computation</h2>
+													<ul><li>For $\theta_1, \cdots, \theta_P \in \mathcal{S}^K$, the approximation goes as $\int\bold{\theta}
+														f\left(\bold{\theta}\right)\Gamma\left(d\bold{\theta}\right)\approx\sum_{p}\bold{\theta}_{p}
+														f\left(\bold{\theta}_{p}\right)\Gamma\left(\Theta_{p}\right)$
+														where $\Gamma\left(\Theta_{p}\right)\simeq\gamma\left(\bold{\theta}_{p}\right)\Delta_{\Theta}$ with $\Gamma\left(d\bold{\theta}\right)=\gamma\left(\bold{\theta}\right)d\bold{\theta}$ dominated by the Lebesgue measure
+													</li></ul>
+													<h2>Metric</h2>
+													<ul>
+														<li>The mean-absolute error:$\text{MAE}\left(\bold{y},\hat{\bold{y}}\right)=\sum_{j}\mathbb{E}\left(\left|\bold{y}_{j}-\hat{\bold{y}}_{j}\right|\right)$ </li>
+											</ul>
+											<aside class="notes"> Expliquer que l'erreur moyenne quadratique ici n'a pas de sens car en théorie pour $alpha< 2$, le moment d'ordre 2 est infini.</aside>
+
+											</section>
+											<section>
+											<h1>Performance vs Spatial Distance of Components - Settings</h1>
+											<ul><li>Vectors of dimension$K=2$ on the semi-circle $\bold{\theta}\in\mathcal{S}_{\mathbb{R}}^{K}$</li>
+												<li>$\Gamma_{j}=\mathcal{V}_{\bold{\mu}_{j},\kappa}$ where:</li>
+											</ul>
+											<span style="text-align:center;">$$~~~~~~~~~~\mathcal{V}_{\bold{\mu},\kappa}\left(d\bold{\theta}\right)\propto\exp\left(\kappa\bold{\mu}^{\top}
+												\bold{\theta}\right)d\bold{\theta}~~~~~~~~~\text{Von-mises Fisher distribution}$$</span>
+											<ul><li>concentration parameter $\kappa=15$ and mean directions $\bold{\mu}_{j}$ for the sources are separated by$\left\{ 5,15,\cdots,85\right\}$ degrees with$\bold{\mu}_{1}$ randomly positioned on the semi-circle</li>
+											 <li>$0.2$ step-size for$\alpha\in\left[1.2,~2\right]$, $P=180$ arcs on the semi-circle,$N=500$ components and$100$ differents experiments</li>
+											 <center></br><img src="figures/angular_deviation.png" alt="" style="float:center; background-color;" width="60%"></center>
+											</ul>
+										</section>
+
+										<section>
+											<h1>Performance vs Spatial Distance of Components - Results</h1>
+											<div class="multiCol">
+												<div class="col">
+												<center>$\alpha=1.6$<img src="figures/experience1-1.png" alt="" style="float:center; background-color; margin-top:-0.4em;" width="100%"></center>
+
+											</div>
+											<div class="col">
+													<center><img src="figures/experience1-2.png" alt="" style="float:center; background-color; margin-top:-0.4em;" width="100%"></center>
+											</div>
+										</div>
+										</section>
+
+
+											<section>
+												<h1>Performance VS Number of Components</h1>
+												<h2 style="margin-top:-0.9em;">Settings</h2>
+												<ul><li>filtering methods in the complex case with $K=2$.</li>
+												<li>$J=2,\cdots,8$ $\alpha\in\left[1.2,2\right]$, and $N=500$ independent realizations. 100 independents experiments are run.</li>
+												<li>$0.2$ step-size for$\alpha\in\left[1.2,~2\right]$, $P=180$ arcs on the semi-circle,$N=500$ components and$100$ differents experiments.</li>
+														<li>$\Gamma_{j}=\mathcal{V}_{\bold{\mu}_{j},\kappa_j}$ with random$\mu_j\in \mathbb{R}^4, \kappa_j>0$</li>
+											</ul>
+											<h2>Results</h2>
+											<div class="multiCol">
+												<div class="col">
+												<center><img src="figures/experience2.png" alt="" style="float:center; background-color; margin-top:-0.4em;" width="90%"> Light area: standard deviation</center>
+
+											</div>
+											<div class="col">
+													<center><img src="figures/elapsed-time.png" alt="" style="float:center; background-color; margin-top:-0.4em;" width="130%"></center>
+											</div>
+										</div>
+											</section>
+											<section>
+												<h1>Conclusion and Future works</h1>
+												<h2>Conclusion</h2>
+												<ul><li>$S\alpha S$ vector characterized by a <b>spatial density</b>: meaning of deterministic directions of arrivals made for multivariate observations</li>
+													<li>$\alpha-$SSF based on a <b>spatial spectrum</b> decomposition: combination of nonlinear beamformer followed by a scalar filter</li>
+													<li>$\alpha-CMF$: a linear filtering which generalize the Multichannel Wiener filter in the $\alpha-$stable theory</li>
+													<li>Generalization of $\alpha-$harmonizable processes to the multivariate case</li>
+												 </ul>
+												 <h2>Future Works</h2>
+												 <ul><li>Estimation of spatial densities</li>
+													 <li> Application to audio processing, image processing</li>
+												 </ul>
+												 <div class="references" style="margin-top:0.8em;">
+													 <ul><li>M Fontaine, A Liutkus, and R Badeau.(2018) Multivariate Alpha-stable Filtering (Submitted).</li></ul>
+												 </div>
+											 </section>
+							<section class="cover" data-background="figures/background.jpg" data-state="no-title-footer no-progressbar has-dark-background">
+											<h2 id='coverh2'>IV - Hybrid Model and Single-channel Speech Enhancement</h2>
+										</section>
+							<section>
+	<h1 style="margin-top:-0.8em;">Motivations</h1>
+	<div class="multiCol">
+		<div class="col">
+	<center><img src="figures/problem_noise.png" alt="" style="float:center; background-color; margin-top:-1.7em;" width="75%"></center>
+</div>
+<div class="col">
+<center><img src="figures/spectrogram.png" alt="" style="float:center; background-color; margin-top:-1.7em;" width="75%"></center>
+</div>
+</div>
+
+
+	<h2 style="margin-top:-0.9em;"> Parameterized Wiener Filter</h2>
+	<ul><li>Wiener filtering$\rightarrow$ minimum mean square error (MMSE) linear estimator of$s\left(f,t\right)$:</li></ul>
+	<center>$$\hat{s}(f,t)=\frac{\sigma_{s}^{2}(f,t)}{\sigma_{s}^{2}(f,t)+\sigma_{n}^{2}(f,t)}x(f,t)$$</center>
+	<ul><li style="margin-top:0.7em;"> Improvements $\rightarrow$ Parameterized Wiener filter (PWF):</li></ul>
+	<center>$$\hat{s}(f,t)=\frac{\sigma_{s}^{2}(f,t)}{\sigma_{s}^{2}(f,t)+k\ \sigma_{n}^{2}(f,t)}x(f,t)$$</center>
+	<h2 style="margin-top:-0.3em;">Objective</h2>
+	<ul><li>Understanding of PWF + provide a fast algorithm</li></ul>
+	<div class="references" style="margin-top:-0.01em;">
+		<ul><li>M Fontaine, A Liutkus, L Girin, and R Badeau.(2017) Explaining the parameterized Wiener filter with alpha-stable processes.</li>
+		<li>Y. Ephraim and D. Malah. (1984) Speech enhancement using a minimum-mean square error short-time spectral amplitude estimator.</li>
+		</ul>
+	</div>
+</section>
+ <section>
+	<h1>Conditional Gaussianity</h1>
+	<center><img src="figures/conditional_gaussian.png" alt="" style="float:center; background-color;margin-top:0.5em;" width="70%"></br></center>
+	<ul><li style="margin-top:1.2em;">$\mathcal{N}_{c}$: ”classical Gaussian”</li>
+		<li>$S\alpha S_c$: ”Gaussian with a randomly perturbed covariance”</li></ul>
+		<div class="references" style="margin-top:0.8em;">
+			<ul><li>Samoradnitsky, G. (1995). Stable non-Gaussian random processes.</li></ul>
+		</div>
+</section>
+<section>
+	<h1>Speech model & Parameterized Wiener filtering</h1>
+	<center><img src="figures/source_noise.png" alt="" style="float:center; background-color; margin-top:-0.3em;" width="65%"></center>
+	<ul><li>$\underline{\alpha_{s}\neq\alpha_{n}}$: different characteristics for speech and noise</li></ul>
+	<center><img src="figures/hybrid_filtering_model.png" alt="" style="float:center; background-color;" width="59%"></center>
+</section>
+
+<section>
+	<h1 style="margin-top:-0.4em;">Impulse Variable Estimation</h1>
+	<h2 style="margin-top:-0.9em;"> A fast estimation</h2>
+	<ul>
+	<li> $\{\phi\}_{f,t}$ do not depend on the signal and are identically distributed</li>
+	<li style="margin-bottom:0.3em;"> for $\alpha<1$, the median is close to the mode of an $\alpha-$ stable distribution $\Rightarrow$ replacing$\phi_{s}\left(f,t\right)$ and$\phi_{n}\left(f,t\right)$ by their median $\mathbb{M}\left(\phi_{s}\right)$ and$\mathbb{M}\left(\phi_{n}\right)$:</li>
+</ul>
+<span style="text-align:center; style="margin-top:-0.8em;"">$$\mathbb{E}\left[s\left(f,t\right)\,|\,x,\sigma\right]\approx\frac{\sigma_{s}^{2}
+	\left(f,t\right)\mathbb{M}\left(\phi_{s}\right)}
+	{\sigma_{s}^{2}\left(f,t\right)\mathbb{M}\left(\phi_{s}\right)+\sigma_{n}^{2}
+	\left(f,t\right)\mathbb{M}\left(\phi_{n}\right)}x\left(f,t\right)$$</span>
+	<h2>Performance of the proposed PWF</h2>
+	<center><img src="figures/results_PWF.png" alt="" style="float:center; background-color;" width="49%"></center>
+	<ul><li>$\alpha_{s}=1.2$ and$\alpha_{n}=1.89$</li>
+		<li>Average results over$10000$ trials $\rightarrow$ Average error$\simeq1.8\%$. With the mode$\simeq3.1\%$.</li>
+	</ul>
+</section>
+
+<section>
+	<h1>Scale Parameter estmation</h1>
+	<h2 style="margin-top:-0.6em;">Property of isotropic distributions</h2>
+	<span style="text-align:center;">$$s\left(f,t\right)\sim S\alpha_{s}S_{c}\left(\sigma_{s}^{\alpha}\left(f,t\right)\right)\Rightarrow\mathbb{E}
+		\left(\ln\left|s\left(f,t\right)\right|\right)
+		=\gamma\left(\frac{1}{\alpha_{s}}-1\right)+\alpha_{s}\log\left(\sigma_{s}\left(f,t\right)\right)$$</span>
+	<ul><li>$\gamma\approx0.577$ is the Euler constant</li></ul>
+	<h2>Smoothed scale parameters</h2>
+	<ul><li>$\sigma_{s}$ and$\sigma_{n}$ estimated through local averaging of$\log\left|\hat{s}\right|$ and$\log\left|\hat{n}\right|$</li>
+	<li>Different neighborhoods for speech and noise$\Rightarrow$ related to Kernel Additive Modeling (KAM)</li></ul>
+		<center><img src="figures/KAM.png" alt="" style="float:center; background-color;" width="60%"></center>
+		<div class="references" style="margin-top:-0.01em;">
+			<ul><li>Liutkus, A. and al. (2014). Kernel additive models for source separation.</li>
+			<li>Nikias, C. L., & Shao, M. (1995). Signal processing with alpha-stable distributions and applications.</li>
+			</ul>
+		</div>
+</section>
+
+<section>
+<h1>Settings</h1>
+<div class="multiCol" style="margin-top:-2.4em;">
+<div class="col">
+	<h2>Multi-alpha Denoising (MAD)</h2>
+	<center><img src="figures/outline_MAD.png" alt="" style="float:center; background-color;" width="60%"></br>
+		</center>
+		<ul><li>Setup :$\alpha_{s}=1.3,\,\alpha_{n}=1.89,\Delta_{s}=0.09\,\text{s},$ $\Delta_{n}=0.16\,\text{s}$ and$4$ iterations. Initialization with$s=n=x/2$</li>
+						<li><b>No need for voice activity detection</b></li>
+		</ul>
+
+</div>
+<div class="col">
+<h2>Corpus and baseline methods</h2>
+<ul><li>$30$ fixed speech lasting $3$ seconds</li>
+<li>Corrupted either by babble noise, car engine or airport environement (with  $0,5,10\,\text{and}\,15\,dB$ SNR values)</li>
+<li>The magnitude spectral subtraction (MSS):$|\hat{s}|=\big(|x|^{\alpha}-\hat{\sigma}_{n}^{\alpha}\big)^{1/\alpha}$ with$\alpha=1$</li>
+<li>The generalized spectral subtraction (GSS) : $|\hat{s}|=|x|^{\alpha}-k\hat{\sigma}_{n}^{\alpha}$ with$\alpha=1.2$ and$k=0.8$</li>
+<li style="">The minimum mean square error speech short-time spectral amplitude (MMSE-STSA) : k=0.92</li></ul>
+</div>
+</div>
+<h2>Evaluation metrics</h2>
+<ul><li>perceptual evaluation of speech quality (PESQ): ranging between -0.5 and 4.5.</li></ul>
+</section>
+
+<section>
+<h1>Results and demonstration</h1>
+<div class="multiCol" style="margin-top:-1.4em;">
+	<div class="col">
+<h2>Results</h2>
+<center><img src="figures/PESQ-scores.png" alt="" style="float:center; background-color;" width="100%"></center>
+</div>
+<div class="col">
+<!-- <h2>MAD for ethnical music data</h2>
+<video style="margin-right:1em;" controls width='70%'>
+	<source data-src="figures/kam_demo.mov" type="video/mp4" />
+	</video> -->
+</div>
+</div>
+
+<h2>Audio demonstration ($0~$dB SNR with car noise)</h2>
+
+<div class="multiCol">
+	<div class="col">
+		<label for="Noisy">
+&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspNoisy<br>
+</label>
+<audio id="Noisy" controls loop>
+<source
+		type="audio/mpeg"
+		src="figures/audio/Noisy.wav"/>
+	</audio>
+</div>
+<div class="col">
+	<label for="MMSE">
+	&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspMMSE-STSA<br>
+	</label>
+		<audio id="MMSE" controls loop>
+		<source
+				type="audio/mpeg"
+				src="figures/audio/MMSE.wav"/>
+			</audio>
+		</div>
+	<div class="col">
+		<label for="MAD">
+		&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspMAD<br>
+		</label>
+			<audio id="MAD" controls loop>
+			<source
+					type="audio/mpeg"
+					src="figures/audio/MAD.wav"/>
+				</audio>
+	</div>
+</div>
+</section>
+<section>
+<h1>Conclusion</h1>
+<ul><li>A theoretical interpretation for the PWF</li></ul>
+	<span style="text-align:center;">$$\hat{s}=\frac{\sigma_{s}^{2}}{\sigma_{s}^{2}+\frac{\mathbb{M}\left(\phi_{n}\right)}
+		{\mathbb{M}\left(\phi_{s}\right)}\sigma_{n}^{2}}x$$</span>
+	<ul><li>Differents characteristics for different source</li>
+	<li>New fast denoising algorithm (63 seconds to denoise 90 speechs)</li>
+	<div class="references" style="margin-top:1em;">
+		<ul><li>M Fontaine, A Liutkus, L Girin, and R Badeau.(2017) Explaining the parameterized Wiener filter with alpha-stable processes.</li></ul>
+	</div>
+</section>
+
+<section class="cover" data-background="figures/background.jpg" data-state="no-title-footer no-progressbar has-dark-background">
+	<h2 id='coverh2'>IV: Conclusion</h2>
+</section>
+<section>
+	<h1>Applications of $\alpha-$stable process</h1>
+ <h2>Audio source localization</h2>
+		<ul><li>Using once the datas in order to localize source in a reverberant environement</li>
+		<li>Outperforms classical algorithms in many scenarios</li>
+		<li>Robust even withfew microphones</li>
+		<li>Many acoustics models possible for the estimation</li>
+	</li></ul>
+	<h2>A new multichannel filtering method</h2>
+	<ul><li>Applicable in all areas of signal processing (imaging, audio, SAR, EEG)</li>
+		<li>One of them generalizes the classical Wiener filter</li>
+		<li>Works even with a complex spatial configuration of the sources</li>
+	</ul>
+	<h2>Speech Enhancement task</h2>
+	<ul>
+		<li>Give a more theoretical approach of parameterized Wiener filter</li>
+		<li>Provide a fast algorithm in single-channel case which do not use a voice activity detector</li>
+		<li>Achieve good results in realistic scenarios</li>
+	</ul>
+</section>
+<section>
+	<h1>Future Work</h1>
+	<h2>Expansion of previous work</h2>
+	<ul><li>
+	Estimation of spatial density in the multichannel $\alpha-$stable filtering ($\alpha-$MF): DNN, NMF, EM-approach</li>
+		<li>Provide an audio source separation algorithm with the $\alpha-$MF</li>
+			<li>Hyperspectral task using $\alpha-$MF</li>
+	<li>Multi-alpha stable denoising in the multichannel case</li>
+	<li>Multi-alpha stable in the multichannel case but for source separation</li></ul>
+  <h2>New Directions</h2>
+	<ul><li> Study of $\alpha-$ Kalman filter for robust noise (already used in seismology)</li>
+	<li>$\alpha-$ ARMA process for denoising</li>
+	</ul>
+
+</section>
+
+<section>
+<div class="affirmation"><b>Thank you ! </b></div>
+<div class="references" style="float:left; margin-top:0.2em;">
+	<ul><li>M Fontaine, C Vanwynsberghe, A Liutkus, and R Badeau.(2017) Scalable source localization with multichannel alpha-stable distributions, EUSIPCO 2017.</li>
+	<li>M Fontaine, C Vanwynsberghe, A Liutkus, and R Badeau.(2017) Sketching for nearfield acoustic imaging of heavy-tailed sources, LVA-ICA 2017.</li>
+	<li>M Fontaine, A Liutkus, L Girin, and R Badeau.(2017) Explaining the parameterized Wiener filter with alpha-stable processes, WASPAA 2017.</li>
+	<li>Fontaine, M., Stöter, F. R., Liutkus, A., Şimşekli, U., Serizel, R., & Badeau, R. LVA-ICA 2018. Multichannel Audio Modeling with Elliptically Stable Tensor Decomposition.</li>
+	<li>M Fontaine, A Liutkus, and R Badeau.(2018) Multivariate Alpha-stable Filtering (Submitted) IEEE-TSP.</li>
+	</ul>
+</div>
+</section>
+			</div>
+			<div class='footer'>
+				<img src="css/theme/img/inria-bottom.svg" alt="Logo" />
+				<div id="middlebox">Alpha-stable processes for signal processing</div>
+			</div>
+	</div>
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: false,
+				slideNumber: true,
+				minScale: 0.1,
+				maxScale: 5,
+				transition: 'none', //
+
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/math-katex/math-katex.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
