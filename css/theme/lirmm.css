@@ -409,7 +409,7 @@ body {
 
 .reveal .footer #middlebox {
   position: absolute;
-  left: 14em;
+  left: 18em;
   bottom: 3px;
   width: 30em;
   height: 2em;
@@ -469,7 +469,8 @@ body {
       padding-left: 0; }
 
 .reveal .cover h1, h2, h3 {
-  margin-top: 2em; }
+  margin-top: 2em;
+  color: white; }
 
 .reveal .cover .partners {
   padding-right: 1em;
@@ -481,9 +482,17 @@ body {
 .reveal .cover img#inria {
   border: none;
   box-shadow: none;
+  background-color: #ffffff;
   position: absolute;
-  top: -2em;
-  height: 8em; }
+  top: 0em;
+  left: -4em;
+  height: 4em; }
+
+.reveal .footer img#bottom {
+  margin-left: -2.7em;
+  margin-bottom: 0.8em;
+  background-color: #ffffff;
+  box-shadow: 1px 1px 10px 0px gray; }
 
 .reveal li {
   types: square; }
